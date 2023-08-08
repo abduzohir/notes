@@ -1,21 +1,4 @@
 function randomId(){return Math.round(Math.random() * 100000)}
-// const tasks = [
-//   {
-//     id: randomId(),
-//     title: '1 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque, fugit?',
-//     content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident totam nostrum saepe cupiditate aliquam quisquam reiciendis est, eum, temporibus harum molestias recusandae itaque illum doloremque aperiam deserunt vel incidunt a.',
-//   },
-//   {
-//     id: randomId(),
-//     title: '2 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque, fugit?',
-//     content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident totam nostrum saepe cupiditate aliquam quisquam reiciendis est, eum, temporibus harum molestias recusandae itaque illum doloremque aperiam deserunt vel incidunt a.',
-//   },
-//   {
-//     id: randomId(),
-//     title: '3 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque, fugit?',
-//     content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident totam nostrum saepe cupiditate aliquam quisquam reiciendis est, eum, temporibus harum molestias recusandae itaque illum doloremque aperiam deserunt vel incidunt a.',
-//   },
-// ]
 const themes = {
   light: {
     'asdf' : 'asdf',
@@ -47,6 +30,22 @@ tasksForm.addEventListener('submit', onFormSubmit)
 btnLightOrDark.addEventListener('click', selectedTheme)
 document.addEventListener('DOMContentLoaded', addTasks)
 document.addEventListener('DOMContentLoaded', addTheme)
+document.addEventListener('click', delTask)
+// удаление карточки
+function delTask(event) {
+  if (event.target.classList.contains('del-btn')) {
+    const parent = event.target.closest('.item')
+    const parentId = parent.getAttribute('item-id')
+    const tasks = JSON.parse(localStorage.getItem('tasks'))
+    tasks.forEach(function (task, key) {
+      if (parentId == task.id) {
+        tasks.splice(key, 1)
+      }
+    })
+    parent.remove()
+    localStorage.setItem('tasks', JSON.stringify(tasks))
+  }
+}
 // изменение темы сайта
 function selectedTheme(){
   if(btnLightOrDark.classList.contains('light')){
@@ -64,7 +63,6 @@ function selectedTheme(){
   for(const key in themeObj){
     themeStr += `${key}: ${themeObj[key]}; `
   }
-// DZ
   let locThemeStr = []
   if(localStorage.getItem('theme') === null){
     locThemeStr.push(themeStr)
@@ -98,13 +96,6 @@ function addTheme(themeStr, locThemeStr){
     console.log(s);
   })
 }
-// DZ
-
-// вытаскиваем данные из массива и через генерацию карточки вставляем данные в HTML
-// tasks.forEach(function(task){
-//   const card = createCardTemplate(task)
-//   contentItems.append(card)
-// })
 // отправка данных формы
 function onFormSubmit(event){
   event.preventDefault()
@@ -162,12 +153,7 @@ function createCardTemplate({id, title, content}){
         delBtn.classList.add('del-btn','icon-trash')
         delBtn.href = '#!'
         delBtn.innerHTML = 'Удалить'
-  delBtn.addEventListener('click', function () {
-    item.style = `display: none;`
-    localStorage.removeItem('tasks')
-  })
   item.append(itemText, delBtn)
   itemText.append(h3, p)
   return item
 }
-
